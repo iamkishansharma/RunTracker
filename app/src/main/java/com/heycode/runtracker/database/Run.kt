@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "runtracker_table")
 data class Run(
     var image: Bitmap? = null,
-    var timstamp: Long = 0L,
+    var timestamp: Long = 0L,
     var avgSpeedInKMH: Float = 0f,
     var distanceInMeters: Int = 0,
     var timeInMillis: Long = 0L,
