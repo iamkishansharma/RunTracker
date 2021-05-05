@@ -12,19 +12,19 @@ interface RunDAO {
     suspend fun deleteRun(run: Run)
 
     @Query("SELECT * FROM runtracker_table ORDER BY timestamp DESC")
-    fun getAllRunSortedByDate(): LiveData<List<Run>>
+    fun getAllRunsSortedByDate(): LiveData<List<Run>>
 
     @Query("SELECT * FROM runtracker_table ORDER BY timeInMillis DESC")
-    fun getAllRunSortedByTimeMillis(): LiveData<List<Run>>
+    fun getAllRunsSortedByTimeMillis(): LiveData<List<Run>>
 
     @Query("SELECT * FROM runtracker_table ORDER BY caloriesBurned DESC")
-    fun getAllRunSortedByCaloriesBurned(): LiveData<List<Run>>
+    fun getAllRunsSortedByCaloriesBurned(): LiveData<List<Run>>
 
     @Query("SELECT * FROM runtracker_table ORDER BY avgSpeedInKMH DESC")
-    fun getAllRunSortedByAvgSpeed(): LiveData<List<Run>>
+    fun getAllRunsSortedByAvgSpeed(): LiveData<List<Run>>
 
     @Query("SELECT * FROM runtracker_table ORDER BY distanceInMeters DESC")
-    fun getAllRunSortedByDistance(): LiveData<List<Run>>
+    fun getAllRunsSortedByDistance(): LiveData<List<Run>>
 
 
     //All Total functions
