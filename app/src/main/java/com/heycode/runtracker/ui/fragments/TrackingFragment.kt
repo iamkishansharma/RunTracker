@@ -9,9 +9,12 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.heycode.runtracker.R
+import com.heycode.runtracker.database.Run
 import com.heycode.runtracker.service.Polyline
 import com.heycode.runtracker.service.TrackingService
 import com.heycode.runtracker.ui.viewmodels.MainViewModel
@@ -24,6 +27,8 @@ import com.heycode.runtracker.utils.Constants.POLYLINE_WIDTH
 import com.heycode.runtracker.utils.TrackingUtility
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_tracking.*
+import java.util.*
+import kotlin.math.round
 
 @AndroidEntryPoint
 class TrackingFragment : Fragment(
@@ -35,7 +40,7 @@ class TrackingFragment : Fragment(
     private var map: GoogleMap? = null
 
     private var currentTimeInMillis = 0L
-
+    private var weight = 60f //TODO:: change this value from user input later
 
     private var menu: Menu? = null
 
@@ -54,6 +59,11 @@ class TrackingFragment : Fragment(
         mapView.onCreate(savedInstanceState)
         btnToggleRun.setOnClickListener {
             toggleRun()
+        }
+
+        btnFinishRun.setOnClickListener {
+            zoomToSeeWholeTrack()
+            endRunAndSaveToDb()
         }
 
         mapView.getMapAsync {
@@ -138,6 +148,62 @@ class TrackingFragment : Fragment(
         }
     }
 
+    private fun zoomToSeeWholeTrack() {
+        val bounds = LatLngBounds.Builder()
+        for (polyline in pathPoints) {
+            for (position in polyline) {
+                bounds.include(position)
+            }
+        }
+        map?.moveCamera(
+            CameraUpdateFactory.newLatLngBounds(
+                bounds.build(),
+                mapView.width,
+                mapView.height,
+                (mapView.height * 0.05f).toInt()
+            )
+        )
+    }
+
+    //Taking screenshot of the run path and saving it to local Database
+    private fun endRunAndSaveToDb() {
+        map?.snapshot { bmp ->
+            var distanceInMeters = 0
+            for (polyline in pathPoints) {
+                distanceInMeters += TrackingUtility.calculatePolylineLength(polyline).toInt()
+            }
+            val avgSpeed =
+                round((distanceInMeters / 1000f) / (currentTimeInMillis / 1000f / 60 / 60) * 10) / 10f
+            val dateTimestamp = Calendar.getInstance().timeInMillis
+            val caloriesBurned = ((distanceInMeters / 1000f) * weight).toInt()
+
+            val run = Run(
+                bmp,
+                dateTimestamp,
+                avgSpeed,
+                distanceInMeters,
+                currentTimeInMillis,
+                caloriesBurned
+            )
+            //calling insert method from viewModel
+            viewModel.insertRun(run)
+            //Showing snackbar to user after saving
+            Snackbar.make(
+                requireActivity().findViewById(R.id.rootView),
+                "Run saved successfully",
+                Snackbar.LENGTH_SHORT
+            ).show()
+
+            //stopping the run after saving
+            stopRun()
+        }
+    }
+
+    private fun stopRun() {
+        sendCommandToService(ACTION_STOP_SERVICE)
+        findNavController().navigate(R.id.action_trackingFragment_to_runFragment)
+    }
+
     private fun sendCommandToService(action: String) =
         Intent(requireContext(), TrackingService::class.java).also {
             it.action = action
@@ -174,8 +240,7 @@ class TrackingFragment : Fragment(
             .setIcon(R.drawable.ic_delete)
             .setPositiveButton("Yes") { _, _ ->
                 //stopping the run
-                sendCommandToService(ACTION_STOP_SERVICE)
-                findNavController().navigate(R.id.action_trackingFragment_to_runFragment)
+                stopRun()
             }
             .setNegativeButton("No") { dialogInterface, _ ->
                 dialogInterface.cancel()
