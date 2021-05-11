@@ -21,7 +21,7 @@ class SetupFragment : Fragment(
     R.layout.fragment_setup
 ) {
     @Inject
-    private lateinit var sharedPref: SharedPreferences
+    lateinit var sharedPref: SharedPreferences
 
     @set:Inject
     var isFirstAppOpen = true

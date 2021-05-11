@@ -183,7 +183,7 @@ class TrackingService : LifecycleService() {
     }
 
     private fun addPathPoint(location: Location) {
-        location?.let {
+        location.let {
             val pos = LatLng(location.latitude, location.longitude)
             pathPoints.value?.apply {
                 last().add(pos)

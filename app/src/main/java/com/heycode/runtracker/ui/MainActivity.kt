@@ -31,6 +31,10 @@ class MainActivity : AppCompatActivity() {
                     bottomNavigationView.visibility = View.GONE
             }
         }
+        bottomNavigationView.setOnNavigationItemReselectedListener {
+            //Noting to select if same item selected
+            //Here we are preventing for loading RUN fragment again and again
+        }
     }
 
     private fun navigateToTrackingFragmentIfNeeded(intent: Intent?) {
