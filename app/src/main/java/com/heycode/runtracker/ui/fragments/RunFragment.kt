@@ -4,6 +4,7 @@ import android.Manifest
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -12,6 +13,7 @@ import com.heycode.runtracker.R
 import com.heycode.runtracker.adapters.RunAdapter
 import com.heycode.runtracker.ui.viewmodels.MainViewModel
 import com.heycode.runtracker.utils.Constants.REQUEST_CODE_LOCATION_PERMISSION
+import com.heycode.runtracker.utils.SortType
 import com.heycode.runtracker.utils.TrackingUtility
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_run.*
@@ -30,7 +32,30 @@ class RunFragment : Fragment(R.layout.fragment_run), EasyPermissions.PermissionC
 
         setupRecyclerView()
 
-        viewModel.runsSortedByDate.observe(viewLifecycleOwner, {
+        when (viewModel.sortType) {
+            SortType.DATE -> spFilter.setSelection(0)
+            SortType.RUNNING_TIME -> spFilter.setSelection(1)
+            SortType.DISTANCE -> spFilter.setSelection(2)
+            SortType.AVG_SPEED -> spFilter.setSelection(3)
+            SortType.CALORIES_BURNED -> spFilter.setSelection(4)
+        }
+        spFilter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                when (p2) {
+                    0 -> viewModel.sortRuns(SortType.DATE)
+                    1 -> viewModel.sortRuns(SortType.RUNNING_TIME)
+                    2 -> viewModel.sortRuns(SortType.DISTANCE)
+                    3 -> viewModel.sortRuns(SortType.AVG_SPEED)
+                    4 -> viewModel.sortRuns(SortType.CALORIES_BURNED)
+                }
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                //nothing
+            }
+        }
+
+        viewModel.runs.observe(viewLifecycleOwner, {
             runAdapter.submitList(it)
         })
 
