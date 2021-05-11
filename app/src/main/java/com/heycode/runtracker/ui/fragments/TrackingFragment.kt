@@ -28,6 +28,7 @@ import com.heycode.runtracker.utils.TrackingUtility
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_tracking.*
 import java.util.*
+import javax.inject.Inject
 import kotlin.math.round
 
 @AndroidEntryPoint
@@ -40,7 +41,9 @@ class TrackingFragment : Fragment(
     private var map: GoogleMap? = null
 
     private var currentTimeInMillis = 0L
-    private var weight = 60f //TODO:: change this value from user input later
+
+    @set:Inject
+    var weight = 60f
 
     private var menu: Menu? = null
 
