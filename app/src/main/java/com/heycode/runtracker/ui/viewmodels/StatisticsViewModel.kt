@@ -1,10 +1,10 @@
 package com.heycode.runtracker.ui.viewmodels
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import com.heycode.runtracker.repo.MainRepository
-import javax.inject.Inject
 
-class StatisticsViewModel @Inject constructor(
+class StatisticsViewModel @ViewModelInject constructor(
     val mainRepository: MainRepository
 ) : ViewModel() {
 
@@ -13,6 +13,6 @@ class StatisticsViewModel @Inject constructor(
     val totalAvgSpeed = mainRepository.getTotalAvgSpeed()
     val totalDistance = mainRepository.getTotalDistance()
 
-    var runsSortedByDate = mainRepository.getAllRunsSortedByDate()
+    val runsSortedByDate = mainRepository.getAllRunsSortedByDate()
 
 }
