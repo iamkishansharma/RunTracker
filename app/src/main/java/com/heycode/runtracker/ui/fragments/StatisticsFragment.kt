@@ -3,6 +3,7 @@ package com.heycode.runtracker.ui.fragments
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.github.mikephil.charting.components.XAxis
@@ -103,7 +104,7 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
                         it.indices.map { i -> BarEntry(i.toFloat(), it[i].avgSpeedInKMH) }
                     val barDataSet = BarDataSet(allAvgSpeed, "Avg Speed Over Time").apply {
                         valueTextColor = Color.WHITE
-                        //color = ContextCompat.getColor(requireContext(), R.color.colorAccent)
+                        color = ContextCompat.getColor(requireContext(), R.color.colorAccent)
                     }
                     barChart.data = BarData(barDataSet)
                     barChart.marker =
