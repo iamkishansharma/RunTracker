@@ -3,6 +3,7 @@ package com.heycode.runtracker.ui.fragments
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -74,8 +75,17 @@ class TrackingFragment : Fragment(
         }
 
         btnFinishRun.setOnClickListener {
-            zoomToSeeWholeTrack()
-            endRunAndSaveToDb()
+            if (zoomToSeeWholeTrack()) {
+                endRunAndSaveToDb()
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Sorry data could not be saved!",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                stopRun()
+            }
         }
 
         mapView.getMapAsync {
@@ -160,13 +170,17 @@ class TrackingFragment : Fragment(
         }
     }
 
-    private fun zoomToSeeWholeTrack() {
+    private fun zoomToSeeWholeTrack(): Boolean {
         val bounds = LatLngBounds.Builder()
         for (polyline in pathPoints) {
             for (position in polyline) {
                 bounds.include(position)
             }
         }
+        if (pathPoints[0].isNullOrEmpty() || bounds.hashCode().toString().isEmpty()) {
+            return false
+        }
+
         map?.moveCamera(
             CameraUpdateFactory.newLatLngBounds(
                 bounds.build(),
@@ -175,6 +189,8 @@ class TrackingFragment : Fragment(
                 (mapView.height * 0.05f).toInt()
             )
         )
+
+        return true
     }
 
     //Taking screenshot of the run path and saving it to local Database
