@@ -6,7 +6,11 @@
     <action
         android:id="@+id/action_global_trackingFragment"
         app:destination="@+id/trackingFragment"
-        app:launchSingleTop="true" />
+        app:enterAnim="@anim/slide_in_up"
+        app:exitAnim="@anim/slide_out_down"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/slide_in_down"
+        app:popExitAnim="@anim/slide_out_up" />
 
     <fragment
         android:id="@+id/runFragment"
@@ -14,7 +18,11 @@
         android:label="RunFragment">
         <action
             android:id="@+id/action_runFragment_to_trackingFragment"
-            app:destination="@id/trackingFragment" />
+            app:destination="@id/trackingFragment"
+            app:enterAnim="@anim/slide_in_up"
+            app:exitAnim="@anim/slide_out_down"
+            app:popEnterAnim="@anim/slide_in_down"
+            app:popExitAnim="@anim/slide_out_up" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -26,7 +34,11 @@
         android:label="SetupFragment">
         <action
             android:id="@+id/action_setupFragment_to_runFragment"
-            app:destination="@id/runFragment" />
+            app:destination="@id/runFragment"
+            app:enterAnim="@anim/slide_in_up"
+            app:exitAnim="@anim/slide_out_down"
+            app:popEnterAnim="@anim/slide_in_down"
+            app:popExitAnim="@anim/slide_out_up" />
     </fragment>
     <fragment
         android:id="@+id/statisticsFragment"
@@ -38,6 +50,10 @@
         android:label="TrackingFragment">
         <action
             android:id="@+id/action_trackingFragment_to_runFragment"
-            app:destination="@id/runFragment" />
+            app:destination="@id/runFragment"
+            app:enterAnim="@anim/slide_in_up"
+            app:exitAnim="@anim/slide_out_down"
+            app:popEnterAnim="@anim/slide_in_down"
+            app:popExitAnim="@anim/slide_out_up" />
     </fragment>
 </navigation>
